@@ -1,5 +1,5 @@
 
 
-void SPI2_Transmit(unsigned char data);
-unsigned char SPI2_Receive();
-void spi_init(int delay, int speed, int bits);
+void SPI_Transmit(unsigned char data);
+unsigned char SPI_Receive();
+void SPI_Init(uint8_t bits, uint32_t speed, uint16_t delay);

@@ -7,6 +7,10 @@
 //LCD Functions +
 
 
+static unsigned char LCDMemory[504], inverse=1;
+static int index=0;
+
+
 void LCD_Init()
 {
 	

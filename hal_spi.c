@@ -3,12 +3,20 @@
 #include <linux/spi/spidev.h>
 #include <sys/ioctl.h>
 #include "nazsys.h"
+#include <fcntl.h>
+#include <stdio.h>
 
 static const char *device = "/dev/spidev0.0";
 static struct spi_ioc_transfer tr_data;
+static uint8_t mode;
+//static uint8_t bits = 8;
+//static uint32_t speed = 500000;
+//static uint16_t delay;
+unsigned char tx; 
+unsigned char rx;
+int fd;
 
-void spi_init(int delay, int speed, int bits){	
-	int fd;
+void SPI_Init(uint8_t bits, uint32_t speed, uint16_t delay){	
 	int ret = 0;
 	
 	fd = open(device, O_RDWR);
@@ -48,28 +56,27 @@ void spi_init(int delay, int speed, int bits){
 	if (ret == -1)
 		pabort("can't get max speed hz");
  
-	tr_data.tx_buf = (unsigned long)tx;
-	tr_data.rx_buf = (unsigned long)rx;
+	tr_data.tx_buf = &tx;
+	tr_data.rx_buf = &rx;
 	tr_data.len = 1;
 	tr_data.delay_usecs = delay;
 	tr_data.speed_hz = speed;
 	tr_data.bits_per_word = bits;
-		
-
 
 	printf("spi mode: %d\n", mode);
 	printf("bits per word: %d\n", bits);
 	printf("max speed: %d Hz (%d KHz)\n", speed, speed/1000);
 }
 
-unsigned char SPI2_Receive()
+unsigned char SPI_Receive()
 {
 	ioctl(fd, SPI_IOC_MESSAGE(1), &tr_data);
 	return tr_data.rx_buf[0];
 }
 
-void SPI2_Transmit(unsigned char data)
+void SPI_Transmit(unsigned char data)
 {
+	tr_data.tx_buf[0] = data;
 	ioctl(fd, SPI_IOC_MESSAGE(1), &tr_data);
 }
 
