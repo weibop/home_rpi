@@ -11,7 +11,7 @@ static uint8_t bit = 8;
 static uint32_t speed = 500000;
 static uint16_t delay;
 
-unsigned char text[22] = "www.olimex.com/dev    ",
+unsigned char text[22] = "www.olimex.com/dev    ";
 
 int main(int argc, char*argv[]){
     unsigned int i;

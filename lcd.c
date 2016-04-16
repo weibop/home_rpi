@@ -66,7 +66,7 @@ void LCD_Send(unsigned char data, unsigned char cd)
 	bcm2835_gpio_write(PIN_LCD_DC, LOW);
 	//P9OUT = P9OUT & 0x7F;     //sending command                 //~(1<<7)
 
-  SPI2_Transmit(data);        //transmitting char/command
+  SPI_Transmit(data);        //transmitting char/command
 
   bcm2835_gpio_write(PIN_LCD_CS, HIGH);
   //P9OUT = P9OUT | 0x01;

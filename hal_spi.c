@@ -16,7 +16,7 @@ unsigned char tx;
 unsigned char rx;
 int fd;
 
-void SPI_Init(uint8_t bits, uint32_t speed, uint16_t delay){	
+void SPI_Init(int bits, int speed, int delay){	
 	int ret = 0;
 	
 	fd = open(device, O_RDWR);
