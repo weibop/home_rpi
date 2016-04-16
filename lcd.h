@@ -6,6 +6,12 @@
 #define PIN_LCD_LIGHT RPI_BPLUS_GPIO_J8_37
 #define PIN_LCD_RESET RPI_BPLUS_GPIO_J8_33
 
+#define SEND_CMD 0
+#define SEND_CHR 1
+#define LCD_X_RES                  84
+#define LCD_Y_RES                  48
+#define LCD_START_LINE_ADDR	(66-2)
+
 void LCD_Init();
 
 void LCD_Send(unsigned char data, unsigned char cd);

@@ -3,6 +3,7 @@
 #include <stdlib.h>
 #include "font.h"
 #include "hal_spi.h"
+#include "lcd.h"
 #include <unistd.h>
 
 

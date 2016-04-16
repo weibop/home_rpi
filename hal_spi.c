@@ -12,8 +12,8 @@ static uint8_t mode;
 //static uint8_t bits = 8;
 //static uint32_t speed = 500000;
 //static uint16_t delay;
-unsigned char tx; 
-unsigned char rx;
+unsigned char spi_tx; 
+unsigned char spi_rx;
 int fd;
 
 void SPI_Init(int bits, int speed, int delay){	
@@ -56,8 +56,8 @@ void SPI_Init(int bits, int speed, int delay){
 	if (ret == -1)
 		pabort("can't get max speed hz");
  
-	tr_data.tx_buf = &tx;
-	tr_data.rx_buf = &rx;
+	tr_data.tx_buf = (int*)&spi_tx;
+	tr_data.rx_buf = (int*)&spi_rx;
 	tr_data.len = 1;
 	tr_data.delay_usecs = delay;
 	tr_data.speed_hz = speed;
@@ -71,12 +71,12 @@ void SPI_Init(int bits, int speed, int delay){
 unsigned char SPI_Receive()
 {
 	ioctl(fd, SPI_IOC_MESSAGE(1), &tr_data);
-	return tr_data.rx_buf[0];
+	return spi_rx;
 }
 
 void SPI_Transmit(unsigned char data)
 {
-	tr_data.tx_buf[0] = data;
+	spi_tx = data;
 	ioctl(fd, SPI_IOC_MESSAGE(1), &tr_data);
 }
 
