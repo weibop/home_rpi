@@ -2,6 +2,7 @@
 #include "hal_spi.h"
 #include "font.h"
 #include <bcm2835.h>
+#include <stdio.h>
 #include "lcd.h"
 
 //LCD Functions +
@@ -13,19 +14,20 @@ static int index=0;
 
 void LCD_Init()
 {
-	
 	bcm2835_gpio_fsel(PIN_LCD_RESET, BCM2835_GPIO_FSEL_OUTP);
-	bcm2835_gpio_write(PIN_LCD_RESET, LOW);	
-	bcm2835_gpio_fsel(PIN_LCD_CS, BCM2835_GPIO_FSEL_OUTP);
-	bcm2835_gpio_write(PIN_LCD_CS, HIGH);
+	bcm2835_gpio_write(PIN_LCD_RESET, LOW);
+
+	//bcm2835_gpio_fsel(PIN_LCD_CS, BCM2835_GPIO_FSEL_OUTP);
+	//bcm2835_gpio_write(PIN_LCD_CS, HIGH);
 	bcm2835_gpio_fsel(PIN_LCD_DC, BCM2835_GPIO_FSEL_OUTP);
 	bcm2835_gpio_write(PIN_LCD_DC, HIGH);
 	bcm2835_gpio_fsel(PIN_LCD_LIGHT, BCM2835_GPIO_FSEL_OUTP);
-	bcm2835_gpio_write(PIN_LCD_LIGHT, LOW);
-	
-	bcm2835_delay(1);
-	bcm2835_gpio_write(PIN_LCD_RESET, HIGH);	
-	
+	bcm2835_gpio_write(PIN_LCD_LIGHT, HIGH);
+
+	bcm2835_delay(10);
+	bcm2835_gpio_write(PIN_LCD_RESET, HIGH);
+
+	printf("\nLCD GPIOs initialisation done.");
   //P9OUT = P9OUT & 0xBF;         //LCD_RES = 0   //~(1<<6)
   //Delay(1000);
   //P9OUT = P9OUT | 0x40;         //LCD_RES = 1   //1<<6
@@ -33,16 +35,16 @@ void LCD_Init()
 
   //from Dimitar's PIC source +
 	//Send sequence of command +
-	  LCD_Send(0x21, SEND_CMD);  // LCD Extended Commands.
-	  //Extended commands +
-		LCD_Send(0xC8, SEND_CMD);  // Set Contrast.
-		LCD_Send(0x04 | !!(LCD_START_LINE_ADDR&(0x40)), SEND_CMD);      // Set Temp S6 for start line
-		LCD_Send(0x40 | (LCD_START_LINE_ADDR & ((0x40)-1)), SEND_CMD);  // Set Temp S[5:0] for start line
-		LCD_Send(0x12, SEND_CMD);  // LCD bias mode 1:68.
-	  //Extended commands -
-	  LCD_Send(0x20, SEND_CMD);  // LCD Standard Commands, Horizontal addressing mode.
-	  LCD_Send(0x08, SEND_CMD);  // LCD blank
-	  LCD_Send(0x0C, SEND_CMD);  // LCD in normal mode.
+	LCD_Send(0x21, SEND_CMD);  // LCD Extended Commands.
+	//Extended commands +
+	LCD_Send(0xC8, SEND_CMD);  // Set Contrast.
+	LCD_Send(0x04 | !!(LCD_START_LINE_ADDR&(0x40)), SEND_CMD);      // Set Temp S6 for start line
+	LCD_Send(0x40 | (LCD_START_LINE_ADDR & ((0x40)-1)), SEND_CMD);  // Set Temp S[5:0] for start line
+	LCD_Send(0x12, SEND_CMD);  // LCD bias mode 1:68.
+	//Extended commands -
+	LCD_Send(0x20, SEND_CMD);  // LCD Standard Commands, Horizontal addressing mode.
+	LCD_Send(0x08, SEND_CMD);  // LCD blank
+	LCD_Send(0x0C, SEND_CMD);  // LCD in normal mode.
 	//Send sequence of command -
   //from Dimitar's PIC source -
 
@@ -50,13 +52,13 @@ void LCD_Init()
 	LCD_Contrast(0xFF);       //Increase contrast
 	LCD_Clear();              //Clear Screen
 	LCD_Set_Position(0, 0);   //0, 0 coordinates of the display
+	printf("\nLCD system initialisation done.");
   //Optional Commands -
 }
 
 void LCD_Send(unsigned char data, unsigned char cd)
 {
-  bcm2835_gpio_write(PIN_LCD_CS, LOW);
-	bcm2835_gpio_write(PIN_LCD_DC, HIGH);
+  //bcm2835_gpio_write(PIN_LCD_CS, LOW);
   //P9OUT = P9OUT & ~(0x01);
 
   if (cd == SEND_CHR)         //check for sending char/command
@@ -68,7 +70,7 @@ void LCD_Send(unsigned char data, unsigned char cd)
 
   SPI_Transmit(data);        //transmitting char/command
 
-  bcm2835_gpio_write(PIN_LCD_CS, HIGH);
+  //bcm2835_gpio_write(PIN_LCD_CS, HIGH);
   //P9OUT = P9OUT | 0x01;
 }
 
@@ -152,7 +154,7 @@ void LCD_Write(unsigned char *a, int l)
 void LCD_Light(int enable)
 {
 	if(enable)
-		bcm2835_gpio_write(PIN_LCD_LIGHT, HIGH);
+		bcm2835_gpio_write(PIN_LCD_LIGHT, LOW);
 	else
-		bcm2835_gpio_write(PIN_LCD_LIGHT, LOW);	
+		bcm2835_gpio_write(PIN_LCD_LIGHT, HIGH);	
 }

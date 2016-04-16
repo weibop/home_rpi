@@ -15,35 +15,29 @@ static uint16_t delay;
 unsigned char text[22] = "www.olimex.com/dev    ";
 
 int main(int argc, char*argv[]){
-    unsigned int i;
-    unsigned char c;
-	printf("Hello World!\n");
+    	unsigned int i;
+    	unsigned char c;
 
-	printf("Initializing bcm2835...\n");
+	printf("\nInitializing bcm2835...");
 	if (!bcm2835_init()){
 		printf(" *** Error: *** bcm2835 initialization failed ***");
 	}
 
-	{
-		//bcm2835_delay(500);
-		delay(1000);
-		LCD_Light(1);
-		delay(1000);
-		LCD_Light(0);
-	}
-    SPI2_Init(0, 1000000, 8);
-    LCD_Init();
+    	SPI_Init(8, 1000000, 0);
+    	LCD_Init();
+	LCD_Light(1);
+	bcm2835_delay(500);
+	LCD_Light(0);
 
-
-
-    while (1)
-    {
-	    c = text[0];
-	    for (i=0; i<22; i++) text[i] = text[i+1];
-    	text[21] = c;
-	    LCD_Clear_Memory();
-  	    LCD_Write(text, 14);
-  	    LCD_Update(1, 0);
-	    for (i=30000; i; i--);
-   }
+    	while (1)
+    	{
+	    	c = text[0];
+	    	for (i=0; i<22; i++) text[i] = text[i+1];
+    		text[21] = c;
+		printf("\n%s", text);
+	    	LCD_Clear_Memory();
+  	    	LCD_Write(text, 14);
+  	    	LCD_Update(1, 0);
+	    	bcm2835_delay(1000);
+    	}
 }

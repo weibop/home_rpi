@@ -1,2 +1,2 @@
-test: test.c hal_spi.c nazsys.h lcd.c
-	gcc -o test test.c hal_spi.c nazsys.h lcd.c -l bcm2835
+test: test.c hal_spi.c lcd.c
+	gcc -o test test.c hal_spi.c lcd.c -l bcm2835

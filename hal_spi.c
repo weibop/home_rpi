@@ -8,12 +8,12 @@
 
 static const char *device = "/dev/spidev0.0";
 static struct spi_ioc_transfer tr_data;
-static uint8_t mode;
+static unsigned char mode;
 //static uint8_t bits = 8;
 //static uint32_t speed = 500000;
 //static uint16_t delay;
-unsigned char spi_tx; 
-unsigned char spi_rx;
+unsigned char spi_tx[1]; 
+unsigned char spi_rx[1];
 int fd;
 
 void SPI_Init(int bits, int speed, int delay){	
@@ -26,6 +26,7 @@ void SPI_Init(int bits, int speed, int delay){
 	/*
 	 * spi mode
 	 */
+	mode = SPI_CPOL;
 	ret = ioctl(fd, SPI_IOC_WR_MODE, &mode);
 	if (ret == -1)
 		pabort("can't set spi mode");
@@ -56,28 +57,34 @@ void SPI_Init(int bits, int speed, int delay){
 	if (ret == -1)
 		pabort("can't get max speed hz");
  
-	tr_data.tx_buf = (int*)&spi_tx;
-	tr_data.rx_buf = (int*)&spi_rx;
+	tr_data.tx_buf = (unsigned long)spi_tx;
+	tr_data.rx_buf = (unsigned long)spi_rx;
 	tr_data.len = 1;
 	tr_data.delay_usecs = delay;
 	tr_data.speed_hz = speed;
 	tr_data.bits_per_word = bits;
 
-	printf("spi mode: %d\n", mode);
-	printf("bits per word: %d\n", bits);
-	printf("max speed: %d Hz (%d KHz)\n", speed, speed/1000);
+	printf("\nspi mode: %d", mode);
+	printf("\nbits per word: %d", bits);
+	printf("\nmax speed: %d Hz (%d KHz)", speed, speed/1000);
 }
 
 unsigned char SPI_Receive()
 {
-	ioctl(fd, SPI_IOC_MESSAGE(1), &tr_data);
-	return spi_rx;
+	int ret = 0;
+	ret = ioctl(fd, SPI_IOC_MESSAGE(1), &tr_data);
+	if (ret == -1)
+		pabort("Error in SPI_Transmit");
+	return spi_rx[0];
 }
 
 void SPI_Transmit(unsigned char data)
 {
-	spi_tx = data;
-	ioctl(fd, SPI_IOC_MESSAGE(1), &tr_data);
+	int ret = 0;
+	spi_tx[0] = data;
+	ret = ioctl(fd, SPI_IOC_MESSAGE(1), &tr_data);
+	if (ret == -1)
+		pabort("Error in SPI_Transmit");
 }
 
 
