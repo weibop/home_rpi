@@ -26,7 +26,9 @@ void SPI_Init(int bits, int speed, int delay){
 	/*
 	 * spi mode
 	 */
-	mode = SPI_CPOL;
+	//mode = SPI_NO_CS + SPI_CPOL;
+	//mode = SPI_CPOL;
+	//mode = SPI_CPOL;
 	ret = ioctl(fd, SPI_IOC_WR_MODE, &mode);
 	if (ret == -1)
 		pabort("can't set spi mode");

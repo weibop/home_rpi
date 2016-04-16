@@ -12,7 +12,7 @@ static uint8_t bit = 8;
 static uint32_t speed = 500000;
 static uint16_t delay;
 
-unsigned char text[22] = "www.olimex.com/dev    ";
+unsigned char text[15] = "Hello World!  ";
 
 int main(int argc, char*argv[]){
 	unsigned int i;
@@ -28,21 +28,18 @@ int main(int argc, char*argv[]){
 	LCD_Light(1);
 	bcm2835_delay(500);
 	LCD_Light(0);
+	bcm2835_delay(500);
+	LCD_Light(1);
 
-	
-	for (i=0; i<5; i++)
-		LCD_Send(FontLookup[1][i], SEND_CHR);
-	bcm2835_delay(5000);
-	  
 	while (1)
 	{
 		c = text[0];
-		for (i=0; i<22; i++) text[i] = text[i+1];
-		text[21] = c;
+		for (i=0; i<13; i++) text[i] = text[i+1];
+		text[13] = c;
 		printf("\n%s", text);
+		bcm2835_delay(1000);
 		LCD_Clear_Memory();
   		LCD_Write(text, 14);
   		LCD_Update(1, 0);
-		bcm2835_delay(1000);
 	}
 }
