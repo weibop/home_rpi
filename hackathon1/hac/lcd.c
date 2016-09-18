@@ -6,7 +6,9 @@
 
 //LCD Functions +
 
-
+//#ifndef DO_PRINT
+//#define DO_PRINT
+//#endif
 static unsigned char LCDMemory[504], inverse=1;
 static int index=0;
 
@@ -51,9 +53,9 @@ void LCD_Init()
 	//LCD_Contrast(0xff);       //Increase contrast
 	LCD_Clear();              //Clear Screen
 	LCD_Set_Position(0, 0);   //0, 0 coordinates of the display
-
+#ifdef DO_PRINT
 	printf("\nLCD system initialisation done.");
-
+#endif
   //Optional Commands -
 }
 

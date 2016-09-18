@@ -4,6 +4,7 @@
 #include <stdlib.h>
 #include <unistd.h>
 #include <stdio.h>
+#include <fcntl.h>
 
 DIR *dir;
 struct dirent *dirent;
@@ -50,7 +51,7 @@ int Ds18b20_Read(float* data){
   while((numRead = read(fd, buf, 256)) > 0) 
   {
    strncpy(tmpData, strstr(buf, "t=") + 2, 5); 
-   float data = strtof(tmpData, NULL);
+   *data = strtof(tmpData, NULL);
    
    //printf("Device: %s  - ", dev); 
    //printf("Temp: %.3f C  ", tempC / 1000);
